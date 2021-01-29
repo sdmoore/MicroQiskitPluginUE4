@@ -29,7 +29,6 @@ bool bCheckBit(uint32 InputInteger, uint32 InputTargetBit) {
 	bool OutputBool = ((InputInteger >> (InputTargetBit)) & OneUnsignedLong);
 	return OutputBool;
 }
-
 uint8 FxnGetMaxQubitsFromHilbert64(uint64 InputValue) {
 	uint64 Temp1UL = 1;
 	uint8 OutputValue = 0;
@@ -68,19 +67,6 @@ int32 FxnGetMaxValueFromMapKeys32(TMap<int32, FVector2D> InputMap) {
 uint8 FxnGetMaxQubitsFromMapKeys32(TMap<int32, FVector2D> InputMap) {
 	return FxnGetMaxQubitsFromHilbert64(static_cast<uint64>(FMath::Abs(FxnGetMaxValueFromMapKeys32(InputMap))));
 }
-
-
-uint8 FQuantumGateSpecifier::GetMinimumQubitsGateSpecifier() {
-	if (EnumGateType == EQuantumGateType::CX) {
-		return (FMath::Max(ControlQubit, TargetQubit) + 1);
-	}
-	else if (EnumGateType == EQuantumGateType::CustomUnitary || EnumGateType == EQuantumGateType::Identity) {
-		return 0;
-	}
-	else {
-		return (TargetQubit + 1);
-	}
-}
 uint8 FQuantumKet::GetMinimumQubitsKet() {
 	uint8 LocalQubitCount = 0;
 	for (auto& iter : TMapKetSpace) {
@@ -92,43 +78,22 @@ uint8 FQuantumKet::GetMinimumQubitsKet() {
 	}
 	return LocalQubitCount;
 }
-//uint64 FQuantumOperator::FxnGetHash(uint32 InputFromState, uint32 InputToState) {
-//	uint64 OutputHashValue = InputToState * MAX_uint32 + InputFromState;
-//	return OutputHashValue;
-//}
-//uint32 FQuantumOperator::FxnGetInverseHashFromState(uint64 InputHash) {
-//	uint32 OutputValue;
-//	OutputValue = InputHash % ((uint64)MAX_uint32);
-//	return OutputValue;
-//}
-//uint32 FQuantumOperator::FxnGetInverseHashToState(uint64 InputHash) {
-//	uint32 OutputValue;
-//	OutputValue = InputHash / ((uint64)MAX_uint32);
-//	return OutputValue;
-//}
-//FIntPoint FQuantumOperator::FxnGetHash(uint32 InputFromState, uint32 InputToState) {
-//	FIntPoint OutputHashValue = FIntPoint(static_cast<int32>(InputFromState), static_cast<int32>(InputToState));
-//	return OutputHashValue;
-//}
-//int32 FQuantumOperator::FxnGetInverseHashFromState(FIntPoint InputHash) {
-//	return InputHash.X;
-//}
-//int32 FQuantumOperator::FxnGetInverseHashToState(FIntPoint InputHash) {
-//	return InputHash.Y;
-//}
-FQuantumOperator::FQuantumOperator() {
-	int32 x = 0;
+uint8 FQuantumGateSpecifier::GetMinimumQubitsGateSpecifier() {
+	if (EnumGateType == EQuantumGateType::CX) {
+		return (FMath::Max(ControlQubit, TargetQubit) + 1);
+	}
+	else if (EnumGateType == EQuantumGateType::CustomUnitary || EnumGateType == EQuantumGateType::Identity) {
+		return 0;
+	}
+	else {
+		return (TargetQubit + 1);
+	}
 }
+
+FQuantumOperator::FQuantumOperator() {;};
+//	int32 x = 0;
+//}
 void FQuantumOperator::InitializeQuantumOperator(FQuantumGateSpecifier InputFQuantumGateSpecifier, uint8 InputQubitCount) {
-	//if (InputFQuantumGateSpecifier.EnumGateType == EQuantumGateType::CX) {
-	//    QubitCount = 1 + 
-	//        FMath::Max(InputFQuantumGateSpecifier.ControlQubit, 
-	//            InputFQuantumGateSpecifier.TargetQubit);
-	//}
-	//else {
-	//    QubitCount = 1 + InputFQuantumGateSpecifier.TargetQubit;
-	//}
-	//WeakPtrUQuantumHilbertSpaceOwning = InputQuantumHilbertSpaceOwning;
 	uint32 LocalHilbertSpaceDim = static_cast<int32>(static_cast<uint32>(1) << static_cast<uint32>(InputQubitCount));
 	float LocalSqrtTwo = FMath::Sqrt(2.0);
 	uint32 LocalTargetQubit = static_cast<uint32>(
@@ -332,7 +297,7 @@ uint8 FQuantumOperatorApplied::GetMinimumQubitsOperatorApplied() {
 	uint8 QubitMinCurrent = 0;
 	uint8 QubitMinOperator = QuantumGateSpecifier.GetMinimumQubitsGateSpecifier();
 	uint8 QubitMinMatrixKet = FxnGetMaxQubitsFromMapKeys(TMapMatrixAppliedToKetSpace);
-	uint8 QubitMinFinalKet = FxnGetMaxQubitsFromMapKeys32(FinalQuantumKet.TMapKetSpace);
+	uint8 QubitMinFinalKet = FxnGetMaxQubitsFromMapKeys32(FinalQuantumKet->TMapKetSpace);
 	if (QubitMinCurrent < QubitMinOperator) {
 		QubitMinCurrent = QubitMinOperator;
 	}
@@ -344,84 +309,93 @@ uint8 FQuantumOperatorApplied::GetMinimumQubitsOperatorApplied() {
 	}
 	return QubitMinCurrent;
 }
-void FQuantumOperatorApplied::UpdateForNewKet(float InputErrorMargin = 0.001) {
+void FQuantumOperatorApplied::UpdateForNewKet(float InputErrorMargin) {
 	TMap<FIntPoint, FVector2D>& MatrixLHS = TMapMatrixKetSpace;
-	TMap<int32, FVector2D>& KetRHS = PtrQuantumKetInitial->TMapKetSpace;
 	TMap<FIntPoint, FVector2D>& MatrixResult = TMapMatrixAppliedToKetSpace;
-	TMap<int32, FVector2D>& KetResult = FinalQuantumKet.TMapKetSpace;
+	TMap<int32, FVector2D>& KetResult = FinalQuantumKet->TMapKetSpace;
 	MatrixResult.Empty();
 	KetResult.Empty();
-	for (auto& iterLHS : MatrixLHS) {
-		int32 FromStateLHS = iterLHS.Key.X;// FxnGetInverseHashFromState(iterLHS.Key);
-		int32 ToStateLHS = iterLHS.Key.Y;// FxnGetInverseHashToState(iterLHS.Key);
-		for (auto& iterRHS : KetRHS) {
-			int32 ToStateRHS = iterRHS.Key;
-			if (FromStateLHS == ToStateRHS) {
-				FVector2D Input0 = KetRHS[iterRHS.Key];
-				FVector2D Input1 = MatrixLHS[iterLHS.Key];
-				FVector2D AddedValue = FVector2D(
-					Input0.X * Input1.X - Input0.Y * Input1.Y,
-					Input0.X * Input1.Y + Input0.Y * Input1.X
-				);
-				int32 AddedKeyKet = ToStateLHS;
-				//FIntPoint AddedKeyMatrix = FxnGetHash(FromStateLHS, ToStateRHS);
-				FIntPoint AddedKeyMatrix = iterLHS.Key;
-				if (MatrixResult.Contains(AddedKeyMatrix)) {
-					FVector2D NewValue = MatrixResult[AddedKeyMatrix] + AddedValue;
-					MatrixResult[AddedKeyMatrix] = NewValue;
-				}
-				else {
-					MatrixResult.Add(AddedKeyMatrix, AddedValue);
-				}
-				if (KetResult.Contains(AddedKeyKet)) {
-					FVector2D NewValue = KetResult[AddedKeyKet] + AddedValue;
-					KetResult[AddedKeyKet] = NewValue;
-				}
-				else {
-					KetResult.Add(AddedKeyKet, AddedValue);
+	if (TSharedPtr<FQuantumKet> PinnedWeakPtrQuantumKetInitial = WeakPtrQuantumKetInitial.Pin())
+	//if (WeakPtrQuantumKetInitial.IsValid()) 
+	{
+		TMap<int32, FVector2D>& KetRHS = PinnedWeakPtrQuantumKetInitial->TMapKetSpace;
+		for (auto& iterLHS : MatrixLHS) {
+			int32 FromStateLHS = iterLHS.Key.X;// FxnGetInverseHashFromState(iterLHS.Key);
+			int32 ToStateLHS = iterLHS.Key.Y;// FxnGetInverseHashToState(iterLHS.Key);
+			for (auto& iterRHS : KetRHS) {
+				int32 ToStateRHS = iterRHS.Key;
+				if (FromStateLHS == ToStateRHS) {
+					FVector2D Input0 = KetRHS[iterRHS.Key];
+					FVector2D Input1 = MatrixLHS[iterLHS.Key];
+					FVector2D AddedValue = FVector2D(
+						Input0.X * Input1.X - Input0.Y * Input1.Y,
+						Input0.X * Input1.Y + Input0.Y * Input1.X
+					);
+					int32 AddedKeyKet = ToStateLHS;
+					//FIntPoint AddedKeyMatrix = FxnGetHash(FromStateLHS, ToStateRHS);
+					FIntPoint AddedKeyMatrix = iterLHS.Key;
+					if (MatrixResult.Contains(AddedKeyMatrix)) {
+						FVector2D NewValue = MatrixResult[AddedKeyMatrix] + AddedValue;
+						MatrixResult[AddedKeyMatrix] = NewValue;
+					}
+					else {
+						MatrixResult.Add(AddedKeyMatrix, AddedValue);
+					}
+					if (KetResult.Contains(AddedKeyKet)) {
+						FVector2D NewValue = KetResult[AddedKeyKet] + AddedValue;
+						KetResult[AddedKeyKet] = NewValue;
+					}
+					else {
+						KetResult.Add(AddedKeyKet, AddedValue);
+					}
 				}
 			}
-		}
-		float LocalMatrixErrorMargin = InputErrorMargin / static_cast<float>(MatrixResult.Num());
-		for (auto& iter : MatrixResult) {
-			if (iter.Value.Size() < LocalMatrixErrorMargin) {
-				MatrixResult.Remove(iter.Key);
+			float LocalMatrixErrorMargin = InputErrorMargin / static_cast<float>(MatrixResult.Num());
+			for (auto& iter : MatrixResult) {
+				if (iter.Value.Size() < LocalMatrixErrorMargin) {
+					MatrixResult.Remove(iter.Key);
+				}
 			}
-		}
-		float LocalKetErrorMargin = InputErrorMargin / static_cast<float>(KetResult.Num());
-		for (auto& iter : KetResult) {
-			if (iter.Value.Size() < LocalKetErrorMargin) {
-				KetResult.Remove(iter.Key);
+			float LocalKetErrorMargin = InputErrorMargin / static_cast<float>(KetResult.Num());
+			for (auto& iter : KetResult) {
+				if (iter.Value.Size() < LocalKetErrorMargin) {
+					KetResult.Remove(iter.Key);
+				}
 			}
 		}
 	}
 	return;
 }
-FQuantumOperatorApplied::FQuantumOperatorApplied() {
-	int32 x = 0;
-}
+FQuantumOperatorApplied::FQuantumOperatorApplied() { ; };
+//	int32 x = 0;
+//}
 FQuantumOperatorApplied::FQuantumOperatorApplied(
-	FQuantumKet* InputPtrQuantumKetInitial,
+	TSharedPtr<FQuantumKet> InputPtrQuantumKetInitial,
 	FQuantumGateSpecifier InputQuantumGateSpecifier, 
 	uint8 InputQubitCount) 
-	: PtrQuantumKetInitial{InputPtrQuantumKetInitial} {
+	//: PtrQuantumKetInitial{InputPtrQuantumKetInitial} 
+{
+	//WeakPtrQuantumKetInitial(InputPtrQuantumKetInitial);
+	WeakPtrQuantumKetInitial = InputPtrQuantumKetInitial;
 	InitializeQuantumOperator(InputQuantumGateSpecifier, InputQubitCount);
 	UpdateForNewKet(InputPtrQuantumKetInitial, 0.001);
 }
-void FQuantumOperatorApplied::UpdateForNewKet(FQuantumKet* InputPtrQuantumKetInitial, float InputErrorMargin = 0.001) {
-	PtrQuantumKetInitial = InputPtrQuantumKetInitial;
+void FQuantumOperatorApplied::UpdateForNewKet(TSharedPtr<FQuantumKet> InputPtrQuantumKetInitial, float InputErrorMargin) {
+	//WeakPtrQuantumKetInitial(InputPtrQuantumKetInitial);
+	WeakPtrQuantumKetInitial = InputPtrQuantumKetInitial;
 	UpdateForNewKet(InputErrorMargin);
 	return;
 }
 UQuantumCircuit::UQuantumCircuit() {
 	QubitCount = 0;
+	HilbertSpaceDim = 1;
 }
-void UQuantumCircuit::InitializeQuantumCircuit() {
+void UQuantumCircuit::ResetQuantumCircuit() {
 	CurrentGates.Empty();
 	return;
 }
 void UQuantumCircuit::InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList) {
-	InitializeQuantumCircuit();
+	ResetQuantumCircuit();
 	QubitCount = 0;
 	for (auto& iter : InputGateSpecifierList) {
 		int32 LocalMax = iter.GetMinimumQubitsGateSpecifier();
@@ -438,10 +412,35 @@ void UQuantumCircuit::InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> Inp
 	}
 	return;
 }
-void UQuantumCircuit::AddGate(FQuantumGateSpecifier InputQuantumGateSpecifier) {
+int32 UQuantumCircuit::AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier) {
+	int32 ReturnIndexValue = -1;
 	if (InputQuantumGateSpecifier.GetMinimumQubitsGateSpecifier() <= QubitCount) {
-		FQuantumKet* LocalPtrQuantumKet = &(CurrentGates.Last().FinalQuantumKet);
-		CurrentGates.Add(FQuantumOperatorApplied(LocalPtrQuantumKet, InputQuantumGateSpecifier, QubitCount));
+		//FQuantumKet* LocalPtrQuantumKet = &(CurrentGates.Last().FinalQuantumKet);
+		//FQuantumOperatorApplied LocalQuantumOperatorApplied =
+		//	FQuantumOperatorApplied(LocalPtrQuantumKet, InputQuantumGateSpecifier, QubitCount);
+		FQuantumOperatorApplied LocalQuantumOperatorApplied =
+			FQuantumOperatorApplied(CurrentGates.Last().FinalQuantumKet, InputQuantumGateSpecifier, QubitCount);
+		ReturnIndexValue = CurrentGates.Add(LocalQuantumOperatorApplied);
 	}
-	return;
+	return ReturnIndexValue;
+}
+int32 UQuantumCircuit::InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) {
+	int32 ReturnIndexValue = -1;
+	if (InputGatePosition >= 0 && InputGatePosition < CurrentGates.Num()) {
+		//FQuantumKet* LocalPtrQuantumKet = &(CurrentGates[InputGatePosition - 1].FinalQuantumKet);
+		//FQuantumOperatorApplied LocalQuantumOperatorApplied =
+		//	FQuantumOperatorApplied(LocalPtrQuantumKet, InputQuantumGateSpecifier, QubitCount);
+		FQuantumOperatorApplied LocalQuantumOperatorApplied =
+			FQuantumOperatorApplied(CurrentGates[InputGatePosition - 1].FinalQuantumKet, InputQuantumGateSpecifier, QubitCount);
+		ReturnIndexValue = CurrentGates.Insert(LocalQuantumOperatorApplied, InputGatePosition);
+		for (int32 CurrentGateIndex = InputGatePosition + 1; CurrentGateIndex < CurrentGates.Num(); CurrentGateIndex++) {
+			//FQuantumKet* SubLocalPtrQuantumKet = &(CurrentGates[CurrentGateIndex - 1].FinalQuantumKet);
+			//CurrentGates[CurrentGateIndex].UpdateForNewKet(SubLocalPtrQuantumKet, 0.001);
+			CurrentGates[CurrentGateIndex].UpdateForNewKet(CurrentGates[CurrentGateIndex - 1].FinalQuantumKet, 0.001);
+		}
+	}
+	else if (InputGatePosition >= CurrentGates.Num()) {
+		ReturnIndexValue = AddQuantumCircuitGate(InputQuantumGateSpecifier);
+	}
+	return ReturnIndexValue;
 }
