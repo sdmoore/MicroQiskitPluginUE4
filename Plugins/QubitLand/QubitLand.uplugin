@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "QubitLand",
+	"Description": "Quantum computing simulation and visualization",
+	"Category": "Other",
+	"CreatedBy": "Spencer Moore",
+	"CreatedByURL": "https://spencersphere.com/",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "QubitLand",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
