@@ -3,7 +3,8 @@
 
 #include "QuantumCircuitInterface.h"
 
-//// Add default functionality here for any IQuantumCircuitInterface functions that are not pure virtual.
+// Add default functionality here for any IQuantumCircuitInterface functions that are not pure virtual.
+
 //// Returns operator matrix directly by a const/read-only TMap reference
 //void IQuantumCircuitInterface::FxnGetRefMatrixOperatorAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) {
 //
@@ -17,8 +18,8 @@
 //void IQuantumCircuitInterface::FxnGetRefInitialKetAtIndex(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput) {
 //	return;
 //}
-//// Returns positive index value if successful, and "-1" if unsuccessful
-//int32 IQuantumCircuitInterface::AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier) {
+// Returns positive index value if successful, and "-1" if unsuccessful
+//int32 IQuantumCircuitInterface::AddQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier) {
 //	return -1;
 //}
 //// Returns positive index value if successful, and "-1" if unsuccessful

@@ -6,7 +6,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "UObject/NoExportTypes.h"
 #include "QuantumGateType.h"
-//#include "QuantumCircuitInterface.h"
+#include "QuantumCircuitInterface.h"
 #include "QuantumCircuit.generated.h"
 
 USTRUCT(BlueprintType)
@@ -55,7 +55,7 @@ public:
 	uint8 GetMinimumQubitsOperatorApplied();
 };
 UCLASS(BlueprintType)
-class QUBITLAND_API UQuantumCircuit : public UObject // , public IQuantumCircuitInterface
+class QUBITLAND_API UQuantumCircuit : public UObject, public IQuantumCircuitInterface
 {
 	GENERATED_BODY()
 public:
@@ -71,34 +71,95 @@ public:
 	/**
 	 * BEGIN INTERFACE FUNCTIONS
 	 * FOR QUANTUM CIRCUIT
+	 * THAT USE BLUEPRINTNATIVEEVENT
 	 */
 	//// Returns operator matrix directly by a const/read-only TMap reference
 	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 	//	void FxnGetRefMatrixOperatorAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
-	//virtual void FxnGetRefMatrixOperatorAtIndex_Implementation(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
+	//virtual void FxnGetRefMatrixOperatorAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
 	//// Returns operator matrix contributions directly by a const/read-only TMap reference
 	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 	//	void FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
-	//virtual void FxnGetRefMatrixOperatorAppliedAtIndex_Implementation(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
+	//virtual void FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
 	//// Returns ket vector directly by a const/read-only TMap reference
 	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 	//	void FxnGetRefInitialKetAtIndex(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput);
-	//virtual void FxnGetRefInitialKetAtIndex_Implementation(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput) override;
+	//virtual void FxnGetRefInitialKetAtIndex(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput) override;
+
+
+	virtual int32 FxnAddQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier) override;
+	virtual int32 FxnInsertQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) override;
+	virtual int32 FxnResetQuantumCircuit_Implementation() override;
+	virtual int32 FxnInitializeQuantumCircuit_Implementation(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) override;
+	//virtual int32 InterfaceInitializeQuantumCircuit_Implementation(TArray<FQuantumGateSpecifier> InputGateSpecifierList) override;
+	
+	virtual int32 FxnTest_Implementation(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) override;
+
+	
+	int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
+
 	// Returns positive index value if successful, and "-1" if unsuccessful
-	UFUNCTION(BlueprintCallable, /*BlueprintNativeEvent, */Category = "Quantum Computing")
-		int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
-	//virtual int32 AddQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+		//int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
+	//int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier) ;
+
 	// Returns positive index value if successful, and "-1" if unsuccessful
-	UFUNCTION(BlueprintCallable, /*BlueprintNativeEvent, */Category = "Quantum Computing")
-		int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition);
-	//virtual int32 InsertQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//	int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition);
+	int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) ;
+
 	// Completely empties gate array
-	UFUNCTION(BlueprintCallable, /*BlueprintNativeEvent, */Category = "Quantum Computing")
-		void ResetQuantumCircuit();
-	//virtual void ResetQuantumCircuit_Implementation() override;
-	// Clears all gates and builds circuit based on an input array of gate specifiers
-	// NOTE: Right now default behavior is to use the minimum number of qubits possible
-	UFUNCTION(BlueprintCallable, /*BlueprintNativeEvent, */Category = "Quantum Computing")
-		void InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList);
-	//virtual void InitializeQuantumCircuit_Implementation(TArray<FQuantumGateSpecifier> InputGateSpecifierList) override;
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//	void ResetQuantumCircuit();
+	int32 ResetQuantumCircuit() ;
+
+	//// Clears all gates and builds circuit based on an input array of gate specifiers
+	//// NOTE: Right now default behavior is to use the minimum number of qubits possible
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//	void InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList);
+	int32 InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList) ;
+
+
+
+
+
+	///////**
+	////// * BEGIN INTERFACE FUNCTIONS
+	////// * FOR QUANTUM CIRCUIT
+	////// * THAT USE BLUEPRINTNATIVEEVENT
+	////// */
+	////// //// Returns operator matrix directly by a const/read-only TMap reference
+	////// //UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	////// //	void FxnGetRefMatrixOperatorAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
+	////// //virtual void FxnGetRefMatrixOperatorAtIndex_Implementation(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
+	////// //// Returns operator matrix contributions directly by a const/read-only TMap reference
+	////// //UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	////// //	void FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
+	////// //virtual void FxnGetRefMatrixOperatorAppliedAtIndex_Implementation(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput) override;
+	////// //// Returns ket vector directly by a const/read-only TMap reference
+	////// //UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	////// //	void FxnGetRefInitialKetAtIndex(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput);
+	////// //virtual void FxnGetRefInitialKetAtIndex_Implementation(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput) override;
+	//////
+	////// // Returns positive index value if successful, and "-1" if unsuccessful
+	////// //UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//////int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
+	//////virtual int32 AddQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier) override;
+	//////
+	//////// Returns positive index value if successful, and "-1" if unsuccessful
+	//////UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//////	int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition);
+	//////virtual int32 InsertQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition);
+	//////
+	//////// Completely empties gate array
+	//////UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//////	void ResetQuantumCircuit();
+	//////virtual void ResetQuantumCircuit_Implementation();
+	//////
+	//////// Clears all gates and builds circuit based on an input array of gate specifiers
+	//////// NOTE: Right now default behavior is to use the minimum number of qubits possible
+	//////UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//////	void InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList);
+	//////virtual void InitializeQuantumCircuit_Implementation(TArray<FQuantumGateSpecifier> InputGateSpecifierList);
+
 };
