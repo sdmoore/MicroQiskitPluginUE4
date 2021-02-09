@@ -1,4 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+//This program is free software : you can redistribute itand /or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//(at your option) any later version.
+//
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with this program.If not, see < https://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -91,33 +102,18 @@ public:
 	virtual int32 FxnInsertQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) override;
 	virtual int32 FxnResetQuantumCircuit_Implementation() override;
 	virtual int32 FxnInitializeQuantumCircuit_Implementation(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) override;
-	//virtual int32 InterfaceInitializeQuantumCircuit_Implementation(TArray<FQuantumGateSpecifier> InputGateSpecifierList) override;
 	
-	virtual int32 FxnTest_Implementation(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) override;
-
-	
+	// Returns positive index value if successful, and "-1" if unsuccessful
 	int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
-
+	
 	// Returns positive index value if successful, and "-1" if unsuccessful
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-		//int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
-	//int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier) ;
-
-	// Returns positive index value if successful, and "-1" if unsuccessful
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition);
 	int32 InsertQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) ;
 
 	// Completely empties gate array
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	void ResetQuantumCircuit();
-	int32 ResetQuantumCircuit() ;
+	int32 ResetQuantumCircuit();
 
 	//// Clears all gates and builds circuit based on an input array of gate specifiers
-	//// NOTE: Right now default behavior is to use the minimum number of qubits possible
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	void InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList);
-	int32 InitializeQuantumCircuit(TArray<FQuantumGateSpecifier> InputGateSpecifierList) ;
+	int32 InitializeQuantumCircuit(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) ;
 
 
 
