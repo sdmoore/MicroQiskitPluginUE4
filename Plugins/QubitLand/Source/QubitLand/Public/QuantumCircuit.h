@@ -102,7 +102,10 @@ public:
 	virtual int32 FxnInsertQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier, int32 InputGatePosition) override;
 	virtual int32 FxnResetQuantumCircuit_Implementation() override;
 	virtual int32 FxnInitializeQuantumCircuit_Implementation(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList) override;
-	
+	virtual TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAtIndex_Implementation(int32 InputIndex) override;
+	virtual TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAppliedAtIndex_Implementation(int32 InputIndex) override;
+	virtual TMap< int32, FVector2D > FxnGetRefInitialKetAtIndex_Implementation(int32 InputIndex) override;
+
 	// Returns positive index value if successful, and "-1" if unsuccessful
 	int32 AddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
 	

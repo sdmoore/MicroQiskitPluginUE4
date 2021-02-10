@@ -36,16 +36,16 @@ class QUBITLAND_API IQuantumCircuitInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	//// Returns operator matrix directly by a const/read-only TMap reference
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	void FxnGetRefMatrixOperatorAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
-	//// Returns operator matrix contributions directly by a const/read-only TMap reference
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	void FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex, const TMap< FIntPoint, FVector2D >& RefOutput);
-	//// Returns ket vector directly by a const/read-only TMap reference
-	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-	//	void FxnGetRefInitialKetAtIndex(int32 InputIndex, const TMap< int32, FVector2D >& RefOutput);
-	
+	// Returns operator matrix directly by a const/read-only TMap reference
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAtIndex(int32 InputIndex);
+	// Returns operator matrix contributions directly by a const/read-only TMap reference
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex);
+	// Returns ket vector directly by a const/read-only TMap reference
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+		TMap< int32, FVector2D > FxnGetRefInitialKetAtIndex(int32 InputIndex);
+
 	//// Returns positive index value if successful, and "-1" if unsuccessful
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 		int32 FxnAddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
@@ -62,10 +62,6 @@ public:
 	// Completely empties gate array
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 		int32 FxnInitializeQuantumCircuit(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList);
-
-	// Completely empties gate array
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-		int32 FxnTest(const TArray<FQuantumGateSpecifier>& InputGateSpecifierList);
 
 	//// Clears all gates and builds circuit based on an input array of gate specifiers
 	//// NOTE: Right now default behavior is to use the minimum number of qubits possible

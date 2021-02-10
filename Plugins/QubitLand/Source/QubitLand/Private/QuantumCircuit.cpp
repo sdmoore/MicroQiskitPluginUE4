@@ -64,13 +64,13 @@ int32 FxnGetMaxValueFromMapKeys(TMap<FIntPoint, FVector2D> InputMap) {
 }
 int32 GetMaxFromGateSpecifier(FQuantumGateSpecifier InputQuantumGateSpecifier ) {
 	if (InputQuantumGateSpecifier.EnumGateType == EQuantumGateType::CX) {
-		return (FMath::Max(InputQuantumGateSpecifier.ControlQubit, InputQuantumGateSpecifier.TargetQubit) + 1);
+		return (FMath::Max(InputQuantumGateSpecifier.ControlQubitArray[0], InputQuantumGateSpecifier.TargetQubitArray[0]) + 1);
 	}
 	else if (InputQuantumGateSpecifier.EnumGateType == EQuantumGateType::CustomUnitary || InputQuantumGateSpecifier.EnumGateType == EQuantumGateType::Identity) {
 		return 0;
 	}
 	else {
-		return (InputQuantumGateSpecifier.TargetQubit + 1);
+		return (InputQuantumGateSpecifier.TargetQubitArray[0] + 1);
 	}
 }
 uint8 FxnGetMaxQubitsFromMapKeys(TMap<FIntPoint, FVector2D> InputMap) {
@@ -149,9 +149,9 @@ void FQuantumOperator::InitializeQuantumOperator(FQuantumGateSpecifier InputFQua
 	float LocalSqrtTwo = FMath::Sqrt(2.0);
 	float LocalOneOverSqrtTwo = 1.0 / LocalSqrtTwo;
 	uint32 LocalTargetQubit = static_cast<uint32>(
-		InputFQuantumGateSpecifier.TargetQubit);
+		InputFQuantumGateSpecifier.TargetQubitArray[0]);
 	uint32 LocalControlQubit = static_cast<uint32>(
-		InputFQuantumGateSpecifier.ControlQubit);
+		InputFQuantumGateSpecifier.ControlQubitArray[0]);
 	for (uint32 Index = 0; Index < LocalHilbertSpaceDim; Index++) {
 		//uint64 CurrentHashUnchanged = FxnGetHash(Index, Index);
 		uint32 IndexTargetBitFipped = ToggleBit(Index, LocalTargetQubit);
@@ -683,3 +683,26 @@ int32 UQuantumCircuit::FxnInsertQuantumCircuitGate_Implementation(FQuantumGateSp
 }
 
 
+TMap< FIntPoint, FVector2D > UQuantumCircuit::FxnGetRefMatrixOperatorAtIndex_Implementation(int32 InputIndex) {
+	return CurrentGates[InputIndex].TMapMatrixKetSpace;
+	//const TMap< FIntPoint, FVector2D >& OutputRef = CurrentGates[InputIndex].TMapMatrixKetSpace;
+	////return const_cast<const TMap< FIntPoint, FVector2D >&>(CurrentGates[InputIndex].TMapMatrixKetSpace);
+	//return OutputRef;
+}
+TMap< FIntPoint, FVector2D > UQuantumCircuit::FxnGetRefMatrixOperatorAppliedAtIndex_Implementation(int32 InputIndex) {
+	return CurrentGates[InputIndex].TMapMatrixAppliedToKetSpace;
+	//return const_cast<const TMap< FIntPoint, FVector2D >&>(CurrentGates[InputIndex].TMapMatrixAppliedToKetSpace);
+}
+TMap< int32, FVector2D > UQuantumCircuit::FxnGetRefInitialKetAtIndex_Implementation(int32 InputIndex) {
+	if (InputIndex == 0)
+	{
+		return InitialQuantumCircuitKet.TMapKetSpace;
+	}
+	else if (CurrentGates.IsValidIndex(InputIndex - 1)) {
+		return CurrentGates[InputIndex - 1].FinalQuantumKet.TMapKetSpace;
+	}
+	else {
+		TMap<int32, FVector2D> EmptyKetMap;
+		return EmptyKetMap;
+	}
+}
