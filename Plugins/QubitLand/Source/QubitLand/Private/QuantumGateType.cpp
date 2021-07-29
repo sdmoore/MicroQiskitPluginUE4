@@ -1,8 +1,16 @@
 
 #include "QuantumGateType.h"
 
-FQuantumGateSpecifier::FQuantumGateSpecifier(EQuantumGateType InputGateType, uint8 InputQubitCount, TArray<uint8> InputControlQubitArray, TArray<uint8> InputTargetQubitArray)
-	: EnumGateType{ InputGateType }, QubitCount{ InputQubitCount }, ControlQubitArray{ InputControlQubitArray }, TargetQubitArray{ InputTargetQubitArray }{
+//FQuantumGateImplemented::FQuantumGateImplemented() {};
+
+
+int32 FQuantumGateSpecifier::InitializeQuantumGate(EQuantumGateType InputGateType, uint8 InputQubitCount, TArray<uint8> InputControlQubitArray, TArray<uint8> InputTargetQubitArray)
+{
+	EnumGateType = InputGateType;
+	QubitCount = InputQubitCount;
+	ControlQubitArray = InputControlQubitArray;
+	TargetQubitArray = InputTargetQubitArray;
+
 	for (auto& iter : ControlQubitArray) {
 		if (iter >= QubitCount) {
 			EnumGateType = EQuantumGateType::Invalid;
@@ -13,6 +21,7 @@ FQuantumGateSpecifier::FQuantumGateSpecifier(EQuantumGateType InputGateType, uin
 			EnumGateType = EQuantumGateType::Invalid;
 		}
 	}
+	return 0;
 }
 FQuantumGateSpecifier::FQuantumGateSpecifier() {
 	EnumGateType = EQuantumGateType::Invalid;
@@ -35,3 +44,11 @@ uint8 FQuantumGateSpecifier::GetMinimumQubitsGateSpecifier() {
 	}
 	return LocalValue;
 }
+//
+//int32 FQuantumGateImplemented::InitializeQuantumGateImplemented(EQuantumGateType InputGateType, uint8 InputQubitCount, TArray<uint8> InputControlQubitArray, TArray<uint8> InputTargetQubitArray)
+//	
+//{
+//	this->InitializeGateImplemented(InputGateType, InputQubitCount, InputControlQubitArray, InputTargetQubitArray);
+//
+//	return 0;
+//}

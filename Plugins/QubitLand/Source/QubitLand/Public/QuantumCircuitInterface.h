@@ -36,17 +36,20 @@ class QUBITLAND_API IQuantumCircuitInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	// Returns operator matrix directly by a const/read-only TMap reference
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAtIndex(int32 InputIndex);
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//	TMap< FIntVector, FVector2D > ImplementArray(TArray<FQuantumGateImplemented>&);
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+	//	TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex);
 	// Returns operator matrix contributions directly by a const/read-only TMap reference
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
-		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex);
+		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAtIndex(int32 InputIndex);
 	// Returns ket vector directly by a const/read-only TMap reference
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 		TMap< int32, FVector2D > FxnGetRefInitialKetAtIndex(int32 InputIndex);
-
-	//// Returns positive index value if successful, and "-1" if unsuccessful
+	// Returns operator matrix directly by a const/read-only TMap reference
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
+		TMap< FIntPoint, FVector2D > FxnGetRefMatrixOperatorAppliedAtIndex(int32 InputIndex);
+	// Returns positive index value if successful, and "-1" if unsuccessful
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Quantum Computing")
 		int32 FxnAddQuantumCircuitGate(FQuantumGateSpecifier InputQuantumGateSpecifier);
 	//virtual int32 AddQuantumCircuitGate_Implementation(FQuantumGateSpecifier InputQuantumGateSpecifier) override;
